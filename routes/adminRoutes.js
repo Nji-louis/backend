@@ -1,0 +1,43 @@
+const express = require("express");
+
+const router = express.Router();
+
+const db = require("../config/db");
+
+const verifyToken = require("../middleware/authMiddleware");
+
+const verifyAdmin = require("../middleware/adminMiddleware");
+
+
+// ==========================
+// ADMIN DASHBOARD STATS
+// ==========================
+
+router.get(
+  "/dashboard",
+  verifyToken,
+  verifyAdmin,
+  (req, res) => {
+
+    db.query(
+      `
+      SELECT
+      (SELECT COUNT(*) FROM users) AS totalUsers,
+      (SELECT COUNT(*) FROM products) AS totalProducts,
+      (SELECT COUNT(*) FROM orders) AS totalOrders
+      `,
+      (err, results) => {
+
+        if (err) {
+          return res.status(500).json(err);
+        }
+
+        res.json(results[0]);
+
+      }
+    );
+
+  }
+);
+
+module.exports = router;
