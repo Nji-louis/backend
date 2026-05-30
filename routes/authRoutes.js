@@ -61,9 +61,13 @@ router.post("/login", (req, res) => {
       );
 
       res.json({
-        token,
-        user,
-      });
+  token,
+  user: {
+    id: user.id,
+    name: user.name,
+    email: user.email
+  }
+});
     }
   );
 });
