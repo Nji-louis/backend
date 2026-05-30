@@ -21,9 +21,10 @@ router.get("/stats",
     db.query(
       `
       SELECT
-      (SELECT COUNT(*) FROM users) AS totalUsers,
-      (SELECT COUNT(*) FROM products) AS totalProducts,
-      (SELECT COUNT(*) FROM orders) AS totalOrders
+(SELECT COUNT(*) FROM users) AS totalUsers,
+(SELECT COUNT(*) FROM products) AS totalProducts,
+(SELECT COUNT(*) FROM orders) AS totalOrders,
+(SELECT COUNT(*) FROM messages) AS totalMessages
       `,
       (err, results) => {
 
