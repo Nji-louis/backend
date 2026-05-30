@@ -51,4 +51,11 @@ router.get("/", (req, res) => {
 
 });
 
+router.get("/test", (req, res) => {
+    res.json({
+        success: true,
+        message: "Messages route working"
+    });
+});
+
 module.exports = router;
