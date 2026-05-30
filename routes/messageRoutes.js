@@ -2,10 +2,12 @@ const verifyToken = require("../middleware/authMiddleware");
 const verifyAdmin = require("../middleware/adminMiddleware");
 const express = require("express");
 const router = express.Router();
+const sendEmail = require("../utils/sendEmail");
 
 const db = require("../config/db");
 
-router.post("/", (req, res) => {
+
+router.post("/", async (req, res) => {
 
     const {
         name,
@@ -20,10 +22,32 @@ router.post("/", (req, res) => {
     db.query(
         sql,
         [name, email, subject, message],
-        (err, result) => {
+        async (err, result) => {
 
             if (err) {
                 return res.status(500).json(err);
+            }
+
+            try {
+
+                await sendEmail(
+                    `New Contact Form Message: ${subject}`,
+                    `
+Name: ${name}
+
+Email: ${email}
+
+Subject: ${subject}
+
+Message:
+${message}
+                    `
+                );
+
+            } catch (emailError) {
+
+                console.error("Email Error:", emailError);
+
             }
 
             res.json({
@@ -35,6 +59,7 @@ router.post("/", (req, res) => {
     );
 
 });
+
 
 router.get(
     "/",
