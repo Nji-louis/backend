@@ -1,3 +1,5 @@
+const verifyToken = require("../middleware/authMiddleware");
+const verifyAdmin = require("../middleware/adminMiddleware");
 const express = require("express");
 const router = express.Router();
 
@@ -34,7 +36,11 @@ router.post("/", (req, res) => {
 
 });
 
-router.get("/", (req, res) => {
+router.get(
+    "/",
+    verifyToken,
+    verifyAdmin,
+    (req, res) => {
 
     db.query(
         "SELECT * FROM messages ORDER BY created_at DESC",
