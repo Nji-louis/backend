@@ -7,6 +7,39 @@ const sendEmail = require("../utils/sendEmail");
 const db = require("../config/db");
 
 
+// =========================
+// EMAIL TEST ROUTE
+// =========================
+
+router.get("/email-test", async (req, res) => {
+
+    try {
+
+        await sendEmail(
+            "Backend Test Email",
+            "If you receive this email, Nodemailer is working correctly."
+        );
+
+        res.json({
+            success: true,
+            message: "Test email sent successfully"
+        });
+
+    } catch (err) {
+
+        console.error("Email Test Error:", err);
+
+        res.status(500).json(err);
+
+    }
+
+});
+
+
+// =========================
+// SEND MESSAGE
+// =========================
+
 router.post("/", async (req, res) => {
 
     const {
@@ -61,32 +94,45 @@ ${message}
 });
 
 
+// =========================
+// GET ALL MESSAGES
+// ADMIN ONLY
+// =========================
+
 router.get(
     "/",
     verifyToken,
     verifyAdmin,
     (req, res) => {
 
-    db.query(
-        "SELECT * FROM messages ORDER BY created_at DESC",
-        (err, results) => {
+        db.query(
+            "SELECT * FROM messages ORDER BY created_at DESC",
+            (err, results) => {
 
-            if (err) {
-                return res.status(500).json(err);
+                if (err) {
+                    return res.status(500).json(err);
+                }
+
+                res.json(results);
+
             }
+        );
 
-            res.json(results);
+    }
+);
 
-        }
-    );
 
-});
+// =========================
+// TEST ROUTE
+// =========================
 
 router.get("/test", (req, res) => {
+
     res.json({
         success: true,
         message: "Messages route working"
     });
+
 });
 
 module.exports = router;
