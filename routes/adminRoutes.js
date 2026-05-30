@@ -13,8 +13,7 @@ const verifyAdmin = require("../middleware/adminMiddleware");
 // ADMIN DASHBOARD STATS
 // ==========================
 
-router.get(
-  "/dashboard",
+router.get("/stats",
   verifyToken,
   verifyAdmin,
   (req, res) => {
