@@ -25,6 +25,7 @@ const adminRoutes = require("./routes/adminRoutes");
 const userRoutes = require("./routes/userRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const messageRoutes = require("./routes/messageRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
@@ -33,6 +34,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/uploads", uploadRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/messages", messageRoutes);
 
 app.get("/", (req, res) => {
   res.send("Backend Running");
