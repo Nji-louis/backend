@@ -1,6 +1,8 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const sendEmail = require("../utils/sendEmail");
 
 
 const router = express.Router();
@@ -71,6 +73,61 @@ router.post("/login", (req, res) => {
 });
     }
   );
+});
+
+router.post("/forgot-password", (req, res) => {
+
+    const { email } = req.body;
+
+    db.query(
+        "SELECT * FROM users WHERE email = ?",
+        [email],
+        async (err, results) => {
+
+            if (err) {
+                return res.status(500).json(err);
+            }
+
+            if (results.length === 0) {
+                return res.status(404).json({
+                    message: "User not found"
+                });
+            }
+
+            const token = crypto.randomBytes(32).toString("hex");
+
+            const expiry = new Date(
+                Date.now() + 60 * 60 * 1000
+            );
+
+            db.query(
+                "UPDATE users SET reset_token = ?, reset_token_expiry = ? WHERE email = ?",
+                [token, expiry, email],
+                async (err) => {
+
+                    if (err) {
+                        return res.status(500).json(err);
+                    }
+
+                    const resetLink =
+                        `https://yourfrontend.com/reset-password/${token}`;
+
+                    await sendEmail(
+                        "Password Reset Request",
+                        `Click this link to reset your password:\n\n${resetLink}`
+                    );
+
+                    res.json({
+                        success: true,
+                        message: "Password reset email sent"
+                    });
+
+                }
+            );
+
+        }
+    );
+
 });
 
 module.exports = router;
