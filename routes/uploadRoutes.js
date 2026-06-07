@@ -31,13 +31,15 @@ router.post(
 
         } catch (error) {
 
-            console.log(error);
+    console.error("Cloudinary Error:", error);
 
-            res.status(500).json({
-                message: "Upload Failed"
-            });
+    res.status(500).json({
+        success: false,
+        error: error.message,
+        details: error
+    });
 
-        }
+}
 
     }
 );
