@@ -17,6 +17,14 @@ router.post(
 
         try {
 
+
+            if (!req.file) {
+    return res.status(400).json({
+        success: false,
+        message: "No file uploaded"
+    });
+}
+
             const result = await cloudinary.uploader.upload(
                 `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
                 {
