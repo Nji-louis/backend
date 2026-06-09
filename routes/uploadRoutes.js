@@ -43,16 +43,16 @@ router.post(
         imageUrl: result.secure_url
       });
 
-    } catch (error) {
+    }  catch (error) {
 
-      console.error(error);
+  console.error(error);
 
-      res.status(500).json({
-        success: false,
-        message: error.message
-      });
+  res.status(500).json({
+    success: false,
+    message: error.message
+  });
 
-    }
+}
 
   }
 );
