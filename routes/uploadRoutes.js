@@ -55,17 +55,6 @@ router.post(
 );
 
 
-router.get("/cloudinary-test", (req, res) => {
-
-    res.json({
-        cloudName: process.env.CLOUDINARY_CLOUD_NAME || "missing",
-        apiKeyExists: !!process.env.CLOUDINARY_API_KEY,
-        apiSecretExists: !!process.env.CLOUDINARY_API_SECRET
-    });
-
-});
-
-
 router.get("/cloudinary-test", async (req, res) => {
 
     try {
