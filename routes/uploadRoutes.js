@@ -27,7 +27,7 @@ router.post(
         });
       }
 
-      const uploadStream = cloudinary.uploader.upload_stream(
+      const stream = cloudinary.uploader.upload_stream(
         {
           folder: "gold-trim-salon"
         },
@@ -48,8 +48,9 @@ router.post(
         }
       );
 
-      streamifier.createReadStream(req.file.buffer)
-        .pipe(uploadStream);
+      streamifier
+        .createReadStream(req.file.buffer)
+        .pipe(stream);
 
     } catch (error) {
 
@@ -62,7 +63,6 @@ router.post(
 
   }
 );
-
 
 
 router.get("/cloudinary-test", async (req, res) => {
