@@ -65,6 +65,15 @@ router.post(
 );
 
 
+router.get("/env-test", (req, res) => {
+  res.json({
+    CLOUDINARY_URL: !!process.env.CLOUDINARY_URL,
+    CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME || null,
+    CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY || null,
+    CLOUDINARY_API_SECRET: !!process.env.CLOUDINARY_API_SECRET
+  });
+});
+
 router.get("/cloudinary-test", async (req, res) => {
 
     try {
