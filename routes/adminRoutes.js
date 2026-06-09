@@ -8,6 +8,12 @@ const verifyToken = require("../middleware/authMiddleware");
 
 const verifyAdmin = require("../middleware/adminMiddleware");
 
+router.get("/test", (req, res) => {
+    res.json({
+        success: true,
+        message: "Admin route is working"
+    });
+});
 
 // ==========================
 // ADMIN DASHBOARD STATS
