@@ -13,29 +13,66 @@ const verifyAdmin = require("../middleware/adminMiddleware");
 // ADMIN DASHBOARD STATS
 // ==========================
 
-router.get("/stats",
+router.get(
+  "/dashboard",
   verifyToken,
   verifyAdmin,
-  (req, res) => {
+  async (req, res) => {
 
-    db.query(
-      `
-      SELECT
-(SELECT COUNT(*) FROM users) AS totalUsers,
-(SELECT COUNT(*) FROM products) AS totalProducts,
-(SELECT COUNT(*) FROM orders) AS totalOrders,
-(SELECT COUNT(*) FROM messages) AS totalMessages
-      `,
-      (err, results) => {
+    try {
 
-        if (err) {
-          return res.status(500).json(err);
+      db.query(
+        `
+        SELECT
+        (SELECT COUNT(*) FROM users) AS totalUsers,
+        (SELECT COUNT(*) FROM products) AS totalProducts,
+        (SELECT COUNT(*) FROM orders) AS totalOrders,
+        (SELECT COUNT(*) FROM messages) AS totalMessages
+        `,
+        (err, stats) => {
+
+          if (err) {
+            return res.status(500).json(err);
+          }
+
+          db.query(
+            "SELECT id,name,email,created_at FROM users ORDER BY created_at DESC LIMIT 5",
+            (err, users) => {
+
+              if (err) {
+                return res.status(500).json(err);
+              }
+
+              db.query(
+                "SELECT * FROM messages ORDER BY created_at DESC LIMIT 5",
+                (err, messages) => {
+
+                  if (err) {
+                    return res.status(500).json(err);
+                  }
+
+                  res.json({
+                    stats: stats[0],
+                    recentUsers: users,
+                    recentMessages: messages
+                  });
+
+                }
+              );
+
+            }
+          );
+
         }
+      );
 
-        res.json(results[0]);
+    } catch (error) {
 
-      }
-    );
+      res.status(500).json({
+        message: error.message
+      });
+
+    }
 
   }
 );

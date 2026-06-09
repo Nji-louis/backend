@@ -41,4 +41,28 @@ router.get(
   }
 );
 
+
+
+router.get(
+  "/admin",
+  verifyToken,
+  verifyAdmin,
+  (req, res) => {
+
+    db.query(
+      "SELECT id,name,email,role,created_at FROM users",
+      (err, results) => {
+
+        if (err) {
+          return res.status(500).json(err);
+        }
+
+        res.json(results);
+
+      }
+    );
+
+  }
+);
+
 module.exports = router;

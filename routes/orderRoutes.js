@@ -65,6 +65,29 @@ router.get("/test", (req, res) => {
 });
 
 
+router.get(
+  "/admin",
+  verifyToken,
+  verifyAdmin,
+  (req, res) => {
+
+    db.query(
+      "SELECT * FROM orders ORDER BY created_at DESC",
+      (err, results) => {
+
+        if (err) {
+          return res.status(500).json(err);
+        }
+
+        res.json(results);
+
+      }
+    );
+
+  }
+);
+
+
 // =========================
 // CREATE ORDER
 // =========================
