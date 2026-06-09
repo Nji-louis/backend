@@ -10,13 +10,20 @@ const upload = multer({
     storage
 });
 
-router.get("/cloudinary-test", (req, res) => {
+router.get("/cloudinary-verify", async (req, res) => {
 
-    res.json({
-        cloudName: process.env.CLOUDINARY_CLOUD_NAME || "missing",
-        apiKeyExists: !!process.env.CLOUDINARY_API_KEY,
-        apiSecretExists: !!process.env.CLOUDINARY_API_SECRET
-    });
+    try {
+
+        const result =
+            await cloudinary.api.ping();
+
+        res.json(result);
+
+    } catch (err) {
+
+        res.status(500).json(err);
+
+    }
 
 });
 
