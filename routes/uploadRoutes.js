@@ -11,6 +11,8 @@ const upload = multer({
 });
 
 
+const streamifier = require("streamifier");
+
 router.post(
   "/",
   upload.single("image"),
@@ -19,40 +21,44 @@ router.post(
     try {
 
       if (!req.file) {
-
         return res.status(400).json({
           success: false,
           message: "No file uploaded"
         });
-
       }
 
-      const fileStr =
-        `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: "gold-trim-salon"
+        },
+        (error, result) => {
 
-      const result =
-        await cloudinary.uploader.upload(
-          fileStr,
-          {
-            folder: "gold-trim-salon"
+          if (error) {
+            return res.status(500).json({
+              success: false,
+              message: error.message
+            });
           }
-        );
 
-      res.json({
-        success: true,
-        imageUrl: result.secure_url
+          return res.json({
+            success: true,
+            imageUrl: result.secure_url
+          });
+
+        }
+      );
+
+      streamifier.createReadStream(req.file.buffer)
+        .pipe(uploadStream);
+
+    } catch (error) {
+
+      return res.status(500).json({
+        success: false,
+        message: error.message
       });
 
-    }  catch (error) {
-
-  console.error(error);
-
-  res.status(500).json({
-    success: false,
-    message: error.message
-  });
-
-}
+    }
 
   }
 );
