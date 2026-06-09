@@ -10,22 +10,7 @@ const upload = multer({
     storage
 });
 
-router.get("/cloudinary-verify", async (req, res) => {
 
-    try {
-
-        const result =
-            await cloudinary.api.ping();
-
-        res.json(result);
-
-    } catch (err) {
-
-        res.status(500).json(err);
-
-    }
-
-});
 
 router.post(
     "/",
@@ -68,5 +53,35 @@ router.post(
 
     }
 );
+
+
+router.get("/cloudinary-test", (req, res) => {
+
+    res.json({
+        cloudName: process.env.CLOUDINARY_CLOUD_NAME || "missing",
+        apiKeyExists: !!process.env.CLOUDINARY_API_KEY,
+        apiSecretExists: !!process.env.CLOUDINARY_API_SECRET
+    });
+
+});
+
+
+router.get("/cloudinary-test", async (req, res) => {
+
+    try {
+
+        const result = await cloudinary.api.ping();
+
+        res.json(result);
+
+    } catch (error) {
+
+        res.status(500).json({
+            error: error.message
+        });
+
+    }
+
+});
 
 module.exports = router;
