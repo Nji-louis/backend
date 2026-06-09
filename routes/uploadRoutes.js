@@ -11,48 +11,52 @@ const upload = multer({
 });
 
 
-
 router.post(
-    "/",
-    upload.single("image"),
-    async (req, res) => {
+  "/",
+  upload.single("image"),
+  async (req, res) => {
 
-        try {
+    try {
 
+      if (!req.file) {
 
-            if (!req.file) {
-    return res.status(400).json({
+        return res.status(400).json({
+          success: false,
+          message: "No file uploaded"
+        });
+
+      }
+
+      const fileStr =
+        `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+
+      const result =
+        await cloudinary.uploader.upload(
+          fileStr,
+          {
+            folder: "gold-trim-salon"
+          }
+        );
+
+      res.json({
+        success: true,
+        imageUrl: result.secure_url
+      });
+
+    } catch (error) {
+
+      console.error(error);
+
+      res.status(500).json({
         success: false,
-        message: "No file uploaded"
-    });
-}
-
-            const result = await cloudinary.uploader.upload(
-                `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
-                {
-                    folder: "gold-trim-salon"
-                }
-            );
-
-            res.json({
-                success: true,
-                imageUrl: result.secure_url
-            });
-
-        } catch (error) {
-
-    console.error("Cloudinary Error:", error);
-
-    res.status(500).json({
-        success: false,
-        error: error.message,
-        details: error
-    });
-
-}
+        message: error.message
+      });
 
     }
+
+  }
 );
+
 
 
 router.get("/cloudinary-test", async (req, res) => {
